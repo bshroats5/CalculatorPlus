@@ -1,42 +1,44 @@
-import math
 import tkinter as tk
 
-def evaluate(event):
-   try:
-       result = eval(entry.get())
-       label['text'] = f'Result: {result}'
-   except Exception as e:
-       label['text'] = str(e)
+class Calculator:
+   def __init__(self, master):
+       self.master = master
+       master.title("Calculator")
 
-def add_button(parent, text, command):
-   button = tk.Button(parent, text=text, command=command)
-   button.pack(side='left', fill='both', expand=True)
-   return button
+       self.display = tk.Entry(master, width=30)
+       self.display.grid(row=0, column=0, columnspan=4)
 
-window = tk.Tk()
-window.title('Calculator')
+       buttons = [
+           '7', '8', '9', '/',
+           '4', '5', '6', '*',
+           '1', '2', '3', '-',
+           '0', '.', '=', '+'
+       ]
 
-entry = tk.Entry(window, width=30)
-entry.bind('<Return>', evaluate)
-entry.pack(fill='x')
+       for i, text in enumerate(buttons):
+           row = i // 4
+           col = i % 4
+           button = tk.Button(master, text=text, command=lambda t=text: self.press(t))
+           button.grid(row=row+1, column=col)
 
-label = tk.Label(window, text='')
-label.pack()
+       self.clear_button = tk.Button(master, text='C', command=self.clear)
+       self.clear_button.grid(row=5, column=0)
 
-buttons = [
-   '7', '8', '9', '/', 'sqrt', '^', '(', ')',
-   '4', '5', '6', '*', 'log', 'sin', 'cos', 'tan',
-   '1', '2', '3', '-', 'e', 'ln', 'sinh', 'cosh', 'tanh',
-   '0', '.', '=', '+', '10^', 'abs', 'round', 'floor', 'ceil',
-]
+   def press(self, char):
+       if char == '=':
+           try:
+               result = eval(self.display.get())
+               self.display.delete(0, tk.END)
+               self.display.insert(0, str(result))
+           except Exception as e:
+               self.display.delete(0, tk.END)
+               self.display.insert(0, str(e))
+       else:
+           self.display.insert(tk.END, char)
 
-for i, text in enumerate(buttons):
-   row = i // 4
-   col = i % 4
-   add_button(window, text, lambda: entry.insert('end', text))
-   if col < 3:
-       window.grid_columnconfigure(col, weight=1)
-   if row < 3:
-       window.grid_rowconfigure(row, weight=1)
+   def clear(self):
+       self.display.delete(0, tk.END)
 
-window.mainloop()
+root = tk.Tk()
+my_gui = Calculator(root)
+root.mainloop()
