@@ -1,35 +1,42 @@
-# Importing the math module
 import math
+import tkinter as tk
 
-# Prompting the user for input
-number_1 = float(input("Enter the first number: "))
-number_2 = float(input("Enter the second number: "))
+def evaluate(event):
+   try:
+       result = eval(entry.get())
+       label['text'] = f'Result: {result}'
+   except Exception as e:
+       label['text'] = str(e)
 
-# Prompting the user for the operation
-operation = input('''Please type in the math operation you would like to complete:
-+ for addition
-- for subtraction
-* for multiplication
-/ for division
-''')
+def add_button(parent, text, command):
+   button = tk.Button(parent, text=text, command=command)
+   button.pack(side='left', fill='both', expand=True)
+   return button
 
-# Performing arithmetic operations based on the user's choice
-if operation == '+':
-    result = number_1 + number_2
-elif operation == '-':
-    result = number_1 - number_2
-elif operation == '*':
-    result = number_1 * number_2
-elif operation == '/':
-    result = number_1 / number_2
-else:
-    print("Invalid operation. Please try again.")
-    exit()
+window = tk.Tk()
+window.title('Calculator')
 
-# Prompting the user for notes
-notes = input("Enter your notes: ")
+entry = tk.Entry(window, width=30)
+entry.bind('<Return>', evaluate)
+entry.pack(fill='x')
 
-# Displaying the results
-print(f"The result of {number_1} {operation} {number_2} is {result}.")
-print(f"Notes: {notes}")
-6
+label = tk.Label(window, text='')
+label.pack()
+
+buttons = [
+   '7', '8', '9', '/', 'sqrt', '^', '(', ')',
+   '4', '5', '6', '*', 'log', 'sin', 'cos', 'tan',
+   '1', '2', '3', '-', 'e', 'ln', 'sinh', 'cosh', 'tanh',
+   '0', '.', '=', '+', '10^', 'abs', 'round', 'floor', 'ceil',
+]
+
+for i, text in enumerate(buttons):
+   row = i // 4
+   col = i % 4
+   add_button(window, text, lambda: entry.insert('end', text))
+   if col < 3:
+       window.grid_columnconfigure(col, weight=1)
+   if row < 3:
+       window.grid_rowconfigure(row, weight=1)
+
+window.mainloop()
