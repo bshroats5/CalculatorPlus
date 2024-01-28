@@ -6,7 +6,7 @@ class Calculator:
     def __init__(self, master):
         self.master = master
         master.title("Calculator")
-        master.geometry('400x500')
+        master.geometry('800x800')
 
         # Display field
         self.display = tk.Entry(master, width=30, font=('Helvetica', 24))
