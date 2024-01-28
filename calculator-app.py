@@ -1,23 +1,18 @@
 import tkinter as tk
-from tkinter import Text, Scrollbar
+from tkinter import simpledialog, Text, Scrollbar, END
+import math
 
 class Calculator:
-    def __init__(self, master: tk.Tk) -> None:
+    def __init__(self, master):
         self.master = master
         master.title("Calculator")
         master.geometry('400x500')
 
-        self.note_frame = tk.Frame(master)
-        self.note_frame.grid(row=0, column=0, columnspan=4, sticky='nswe')
-        self.note_text = Text(self.note_frame, height=10, width=30, wrap='word')
-        self.scrollbar = Scrollbar(self.note_frame, orient="vertical", command=self.note_text.yview)
-        self.note_text.configure(yscrollcommand=self.scrollbar.set)
-        self.scrollbar.pack(side='right', fill='y')
-        self.note_text.pack(side='left', fill='both', expand=True)
-
+        # Display field
         self.display = tk.Entry(master, width=30, font=('Helvetica', 24))
         self.display.grid(row=1, column=0, columnspan=4, ipady=20, ipadx=20)
 
+        # Buttons
         buttons = [
             '7', '8', '9', '/',
             '4', '5', '6', '*',
@@ -45,11 +40,27 @@ class Calculator:
 
         self.notes = []
 
-    def clear_entry(self) -> None:
-        pass
+    def press(self, char):
+        self.display.insert(tk.END, char)
 
-    def evaluate(self) -> None:
-        pass
+    def clear_entry(self):
+        self.display.delete(0, tk.END)
 
-    def press(self, text: str) -> None:
-        pass
+    def evaluate(self):
+        try:
+            expr = self.display.get()
+            result = eval(expr)
+            note = simpledialog.askstring("Note", "Enter a note for this calculation:", parent=self.master)
+            if note is not None:
+                self.notes.append((str(result), note))
+                with open('notes.txt', 'a') as f:
+                    f.write(f"{str(result)} - {note}\n")
+                self.display.delete(0, tk.END)
+                self.display.insert(0, str(result))
+        except Exception as e:
+            self.display.delete(0, tk.END)
+            self.display.insert(0, str(e))
+
+root = tk.Tk()
+my_gui = Calculator(root)
+root.mainloop()
