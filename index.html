@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator Plus - Web Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .calculator {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .display {
+            width: 100%;
+            height: 60px;
+            font-size: 24px;
+            text-align: right;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .advanced-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            height: 60px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            opacity: 0.8;
+        }
+        
+        .number {
+            background-color: #e0e0e0;
+        }
+        
+        .operator {
+            background-color: #ff9500;
+            color: white;
+        }
+        
+        .function {
+            background-color: #007aff;
+            color: white;
+        }
+        
+        .equals {
+            background-color: #ff9500;
+            color: white;
+            grid-column: span 2;
+        }
+        
+        .clear {
+            background-color: #ff3b30;
+            color: white;
+        }
+        
+        .history {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        
+        .history-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        
+        .note-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .save-btn {
+            background-color: #34c759;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .download-btn {
+            background-color: #007aff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧮 Calculator Plus - Web Demo</h1>
+    <p>A powerful calculator with note-taking functionality</p>
+    
+    <div class="calculator">
+        <input type="text" class="display" id="display" placeholder="Enter expression...">
+        
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button class="function" onclick="appendToDisplay('(')">(</button>
+            <button class="function" onclick="appendToDisplay(')')">)</button>
+            <button class="operator" onclick="appendToDisplay('/')">÷</button>
+            
+            <button class="number" onclick="appendToDisplay('7')">7</button>
+            <button class="number" onclick="appendToDisplay('8')">8</button>
+            <button class="number" onclick="appendToDisplay('9')">9</button>
+            <button class="operator" onclick="appendToDisplay('*')">×</button>
+            
+            <button class="number" onclick="appendToDisplay('4')">4</button>
+            <button class="number" onclick="appendToDisplay('5')">5</button>
+            <button class="number" onclick="appendToDisplay('6')">6</button>
+            <button class="operator" onclick="appendToDisplay('-')">-</button>
+            
+            <button class="number" onclick="appendToDisplay('1')">1</button>
+            <button class="number" onclick="appendToDisplay('2')">2</button>
+            <button class="number" onclick="appendToDisplay('3')">3</button>
+            <button class="operator" onclick="appendToDisplay('+')">+</button>
+            
+            <button class="number" onclick="appendToDisplay('0')">0</button>
+            <button class="number" onclick="appendToDisplay('.')">.</button>
+            <button class="equals" onclick="calculate()">=</button>
+        </div>
+        
+        <div class="advanced-buttons">
+            <button class="function" onclick="appendToDisplay('Math.sin(')">sin</button>
+            <button class="function" onclick="appendToDisplay('Math.cos(')">cos</button>
+            <button class="function" onclick="appendToDisplay('Math.tan(')">tan</button>
+            
+            <button class="function" onclick="appendToDisplay('Math.sqrt(')">√</button>
+            <button class="function" onclick="appendToDisplay('Math.log(')">log</button>
+            <button class="function" onclick="appendToDisplay('Math.exp(')">exp</button>
+            
+            <button class="function" onclick="appendToDisplay('Math.PI')">π</button>
+            <button class="function" onclick="appendToDisplay('**')">^</button>
+            <button class="function" onclick="appendToDisplay('%')">%</button>
+        </div>
+        
+        <div id="result-section" style="display: none;">
+            <h3>Result: <span id="result"></span></h3>
+            <input type="text" class="note-input" id="note" placeholder="Add a note for this calculation...">
+            <button class="save-btn" onclick="saveCalculation()">Save Calculation</button>
+        </div>
+    </div>
+    
+    <div class="history">
+        <h2>📝 Calculation History</h2>
+        <div id="history-list">
+            <p>No calculations yet. Start calculating to see your history!</p>
+        </div>
+        <button class="download-btn" onclick="downloadHistory()">📥 Download History</button>
+    </div>
+
+    <script>
+        let calculationHistory = [];
+        let currentExpression = '';
+        let currentResult = '';
+
+        function appendToDisplay(value) {
+            const display = document.getElementById('display');
+            display.value += value;
+        }
+
+        function clearDisplay() {
+            document.getElementById('display').value = '';
+            document.getElementById('result-section').style.display = 'none';
+        }
+
+        function calculate() {
+            const display = document.getElementById('display');
+            const expression = display.value;
+            
+            try {
+                // Replace common math notation
+                let processedExpression = expression
+                    .replace(/×/g, '*')
+                    .replace(/÷/g, '/')
+                    .replace(/\^/g, '**');
+                
+                // Evaluate the expression
+                const result = eval(processedExpression);
+                
+                // Display result
+                document.getElementById('result').textContent = result;
+                document.getElementById('result-section').style.display = 'block';
+                
+                // Store for saving
+                currentExpression = expression;
+                currentResult = result;
+                
+            } catch (error) {
+                alert('Error: Invalid expression');
+            }
+        }
+
+        function saveCalculation() {
+            const note = document.getElementById('note').value;
+            const timestamp = new Date().toLocaleString();
+            
+            const calculation = {
+                date: timestamp,
+                expression: currentExpression,
+                result: currentResult,
+                note: note
+            };
+            
+            calculationHistory.push(calculation);
+            updateHistoryDisplay();
+            
+            // Clear note input
+            document.getElementById('note').value = '';
+            document.getElementById('result-section').style.display = 'none';
+            
+            alert('Calculation saved!');
+        }
+
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('history-list');
+            
+            if (calculationHistory.length === 0) {
+                historyList.innerHTML = '<p>No calculations yet. Start calculating to see your history!</p>';
+                return;
+            }
+            
+            historyList.innerHTML = '';
+            
+            calculationHistory.slice().reverse().forEach((calc, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <strong>${calc.date}</strong><br>
+                    Expression: <code>${calc.expression}</code><br>
+                    Result: <code>${calc.result}</code><br>
+                    ${calc.note ? `Note: ${calc.note}` : ''}
+                `;
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        function downloadHistory() {
+            if (calculationHistory.length === 0) {
+                alert('No calculations to download!');
+                return;
+            }
+            
+            const dataStr = JSON.stringify(calculationHistory, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `calculator_history_${new Date().toISOString().slice(0,10)}.json`;
+            link.click();
+        }
+
+        // Allow Enter key to calculate
+        document.getElementById('display').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+    </script>
+</body>
+</html>
