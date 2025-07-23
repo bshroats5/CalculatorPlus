@@ -42,7 +42,7 @@
         
         .advanced-buttons {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 10px;
             margin-bottom: 20px;
         }
@@ -77,7 +77,6 @@
         .equals {
             background-color: #ff9500;
             color: white;
-            grid-column: span 2;
         }
         
         .clear {
@@ -157,18 +156,17 @@
             <button class="number" onclick="appendToDisplay('0')">0</button>
             <button class="number" onclick="appendToDisplay('.')">.</button>
             <button class="equals" onclick="calculate()">=</button>
+            <button class="function" onclick="appendToDisplay('Math.PI')">π</button>
         </div>
         
         <div class="advanced-buttons">
             <button class="function" onclick="appendToDisplay('Math.sin(')">sin</button>
             <button class="function" onclick="appendToDisplay('Math.cos(')">cos</button>
             <button class="function" onclick="appendToDisplay('Math.tan(')">tan</button>
-            
             <button class="function" onclick="appendToDisplay('Math.sqrt(')">√</button>
+            
             <button class="function" onclick="appendToDisplay('Math.log(')">log</button>
             <button class="function" onclick="appendToDisplay('Math.exp(')">exp</button>
-            
-            <button class="function" onclick="appendToDisplay('Math.PI')">π</button>
             <button class="function" onclick="appendToDisplay('**')">^</button>
             <button class="function" onclick="appendToDisplay('%')">%</button>
         </div>
