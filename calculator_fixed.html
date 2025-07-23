@@ -33,63 +33,67 @@
             box-sizing: border-box;
         }
         
-        .buttons {
+        .button-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 15px;
             margin-bottom: 20px;
         }
         
-        .advanced-buttons {
+        .advanced-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 15px;
             margin-bottom: 20px;
         }
         
         button {
-            height: 60px;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
+            height: 70px;
+            font-size: 20px;
+            font-weight: bold;
+            border: 2px solid #ccc;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.2s;
-            min-width: 60px;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
+            min-width: 70px;
         }
         
         button:hover {
-            opacity: 0.8;
+            transform: scale(1.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
         .number {
-            background-color: #e0e0e0;
+            background-color: #f0f0f0;
+            color: #333;
+            border-color: #ddd;
         }
         
         .operator {
             background-color: #ff9500;
             color: white;
-            font-weight: bold;
+            border-color: #e8890b;
         }
         
         .function {
             background-color: #007aff;
             color: white;
-            font-weight: bold;
+            border-color: #0056cc;
         }
         
         .equals {
             background-color: #ff9500;
             color: white;
-            font-weight: bold;
+            border-color: #e8890b;
         }
         
         .clear {
             background-color: #ff3b30;
             color: white;
-            font-weight: bold;
+            border-color: #e02d1c;
         }
         
         .history {
@@ -111,6 +115,7 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             margin: 10px 0;
+            box-sizing: border-box;
         }
         
         .save-btn {
@@ -131,6 +136,14 @@
             cursor: pointer;
             margin-left: 10px;
         }
+        
+        .result-section {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -140,46 +153,56 @@
     <div class="calculator">
         <input type="text" class="display" id="display" placeholder="Enter expression...">
         
-        <div class="buttons">
+        <!-- Main Calculator Buttons -->
+        <div class="button-grid">
+            <!-- Row 1 -->
             <button class="clear" onclick="clearDisplay()">C</button>
             <button class="function" onclick="appendToDisplay('(')">(</button>
             <button class="function" onclick="appendToDisplay(')')">)</button>
             <button class="operator" onclick="appendToDisplay('/')">÷</button>
             
+            <!-- Row 2 -->
             <button class="number" onclick="appendToDisplay('7')">7</button>
             <button class="number" onclick="appendToDisplay('8')">8</button>
             <button class="number" onclick="appendToDisplay('9')">9</button>
             <button class="operator" onclick="appendToDisplay('*')">×</button>
             
+            <!-- Row 3 -->
             <button class="number" onclick="appendToDisplay('4')">4</button>
             <button class="number" onclick="appendToDisplay('5')">5</button>
             <button class="number" onclick="appendToDisplay('6')">6</button>
             <button class="operator" onclick="appendToDisplay('-')">−</button>
             
+            <!-- Row 4 -->
             <button class="number" onclick="appendToDisplay('1')">1</button>
             <button class="number" onclick="appendToDisplay('2')">2</button>
             <button class="number" onclick="appendToDisplay('3')">3</button>
             <button class="operator" onclick="appendToDisplay('+')">+</button>
             
+            <!-- Row 5 -->
             <button class="number" onclick="appendToDisplay('0')">0</button>
             <button class="number" onclick="appendToDisplay('.')">.</button>
             <button class="equals" onclick="calculate()">=</button>
             <button class="function" onclick="appendToDisplay('Math.PI')">π</button>
         </div>
         
-        <div class="advanced-buttons">
+        <!-- Advanced Functions -->
+        <h3>Advanced Functions</h3>
+        <div class="advanced-grid">
+            <!-- Row 1 -->
             <button class="function" onclick="appendToDisplay('Math.sin(')">sin</button>
             <button class="function" onclick="appendToDisplay('Math.cos(')">cos</button>
             <button class="function" onclick="appendToDisplay('Math.tan(')">tan</button>
             <button class="function" onclick="appendToDisplay('Math.sqrt(')">√</button>
             
+            <!-- Row 2 -->
             <button class="function" onclick="appendToDisplay('Math.log(')">log</button>
             <button class="function" onclick="appendToDisplay('Math.exp(')">exp</button>
             <button class="function" onclick="appendToDisplay('**')">^</button>
             <button class="function" onclick="appendToDisplay('%')">%</button>
         </div>
         
-        <div id="result-section" style="display: none;">
+        <div id="result-section" class="result-section">
             <h3>Result: <span id="result"></span></h3>
             <input type="text" class="note-input" id="note" placeholder="Add a note for this calculation...">
             <button class="save-btn" onclick="saveCalculation()">Save Calculation</button>
@@ -218,6 +241,7 @@
                 let processedExpression = expression
                     .replace(/×/g, '*')
                     .replace(/÷/g, '/')
+                    .replace(/−/g, '-')
                     .replace(/\^/g, '**');
                 
                 // Evaluate the expression
@@ -232,7 +256,7 @@
                 currentResult = result;
                 
             } catch (error) {
-                alert('Error: Invalid expression');
+                alert('Error: Invalid expression - ' + error.message);
             }
         }
 
