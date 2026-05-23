@@ -213,7 +213,7 @@
         <div id="history-list">
             <p>No calculations yet. Start calculating to see your history!</p>
         </div>
-        <button class="download-btn" onclick="downloadHistory()">📥 Download History</button>
+        <button class="download-btn" onclick="shareHistory()">📤 Share / Save History</button>
     </div>
 
     <script>
@@ -302,19 +302,25 @@
             });
         }
 
-        function downloadHistory() {
+        function shareHistory() {
             if (calculationHistory.length === 0) {
-                alert('No calculations to download!');
+                alert('No calculations to share!');
                 return;
             }
-            
-            const dataStr = JSON.stringify(calculationHistory, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(dataBlob);
-            link.download = `calculator_history_${new Date().toISOString().slice(0,10)}.json`;
-            link.click();
+
+            const text = calculationHistory.map(calc =>
+                `${calc.date}\n${calc.expression} = ${calc.result}${calc.note ? '\nNote: ' + calc.note : ''}`
+            ).join('\n\n');
+
+            if (navigator.share) {
+                navigator.share({ title: 'Calculator Plus History', text });
+            } else {
+                const blob = new Blob([text], { type: 'text/plain' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `calculator_history_${new Date().toISOString().slice(0, 10)}.txt`;
+                link.click();
+            }
         }
 
         // Allow Enter key to calculate
