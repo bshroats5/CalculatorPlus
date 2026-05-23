@@ -337,7 +337,8 @@
                 `${calc.date}\n${calc.expression} = ${calc.result}${calc.note ? '\nNote: ' + calc.note : ''}`
             ).join('\n\n');
 
-            if (navigator.share) {
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            if (isMobile && navigator.share) {
                 navigator.share({ title: 'Calculator Plus History', text });
             } else {
                 navigator.clipboard.writeText(text).then(() => {
