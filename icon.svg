@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="80" fill="#007aff"/>
+  <!-- Display screen -->
+  <rect x="56" y="56" width="400" height="110" rx="14" fill="rgba(255,255,255,0.15)"/>
+  <text x="436" y="145" font-family="Arial, sans-serif" font-size="72" fill="white" text-anchor="end" font-weight="bold">C+</text>
+  <!-- Row 1 buttons -->
+  <rect x="56"  y="192" width="82" height="58" rx="10" fill="#ff3b30"/>
+  <rect x="154" y="192" width="82" height="58" rx="10" fill="rgba(255,255,255,0.25)"/>
+  <rect x="252" y="192" width="82" height="58" rx="10" fill="rgba(255,255,255,0.25)"/>
+  <rect x="350" y="192" width="106" height="58" rx="10" fill="#ff9500"/>
+  <!-- Row 2 buttons -->
+  <rect x="56"  y="266" width="82" height="58" rx="10" fill="rgba(255,255,255,0.2)"/>
+  <rect x="154" y="266" width="82" height="58" rx="10" fill="rgba(255,255,255,0.2)"/>
+  <rect x="252" y="266" width="82" height="58" rx="10" fill="rgba(255,255,255,0.2)"/>
+  <rect x="350" y="266" width="106" height="58" rx="10" fill="#ff9500"/>
+  <!-- Row 3 buttons -->
+  <rect x="56"  y="340" width="82" height="58" rx="10" fill="rgba(255,255,255,0.2)"/>
+  <rect x="154" y="340" width="82" height="58" rx="10" fill="rgba(255,255,255,0.2)"/>
+  <rect x="252" y="340" width="82" height="58" rx="10" fill="rgba(255,255,255,0.2)"/>
+  <rect x="350" y="340" width="106" height="58" rx="10" fill="#ff9500"/>
+  <!-- Row 4 buttons -->
+  <rect x="56"  y="414" width="82" height="58" rx="10" fill="rgba(255,255,255,0.2)"/>
+  <rect x="154" y="414" width="82" height="58" rx="10" fill="rgba(255,255,255,0.2)"/>
+  <rect x="252" y="414" width="204" height="58" rx="10" fill="#ff9500"/>
+</svg>

@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator Plus - Web Demo</title>
+    <title>Calculator Plus</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007aff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Calc+">
+    <link rel="apple-touch-icon" href="icon.svg">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,7 +21,7 @@
             padding: 20px;
             background-color: #f5f5f5;
         }
-        
+
         .calculator {
             background: white;
             border-radius: 10px;
@@ -20,7 +29,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
         }
-        
+
         .display {
             width: 100%;
             height: 60px;
@@ -32,66 +41,46 @@
             margin-bottom: 20px;
             box-sizing: border-box;
         }
-        
-        .buttons {
+
+        .button-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 15px;
             margin-bottom: 20px;
         }
-        
-        .advanced-buttons {
+
+        .advanced-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 15px;
             margin-bottom: 20px;
         }
-        
+
         button {
-            height: 60px;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
+            height: 70px;
+            font-size: 20px;
+            font-weight: bold;
+            border: 2px solid #ccc;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.2s;
-            min-width: 60px;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
+            min-width: 70px;
         }
-        
+
         button:hover {
-            opacity: 0.8;
+            transform: scale(1.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
-        
-        .number {
-            background-color: #e0e0e0;
-        }
-        
-        .operator {
-            background-color: #ff9500;
-            color: white;
-            font-weight: bold;
-        }
-        
-        .function {
-            background-color: #007aff;
-            color: white;
-            font-weight: bold;
-        }
-        
-        .equals {
-            background-color: #ff9500;
-            color: white;
-            font-weight: bold;
-        }
-        
-        .clear {
-            background-color: #ff3b30;
-            color: white;
-            font-weight: bold;
-        }
-        
+
+        .number   { background-color: #f0f0f0; color: #333; border-color: #ddd; }
+        .operator { background-color: #ff9500; color: white; border-color: #e8890b; }
+        .function { background-color: #007aff; color: white; border-color: #0056cc; }
+        .equals   { background-color: #ff9500; color: white; border-color: #e8890b; }
+        .clear    { background-color: #ff3b30; color: white; border-color: #e02d1c; }
+
         .history {
             background: white;
             border-radius: 10px;
@@ -99,20 +88,21 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
         }
-        
+
         .history-item {
             border-bottom: 1px solid #eee;
             padding: 10px 0;
         }
-        
+
         .note-input {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
             margin: 10px 0;
+            box-sizing: border-box;
         }
-        
+
         .save-btn {
             background-color: #34c759;
             color: white;
@@ -121,7 +111,7 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        
+
         .download-btn {
             background-color: #007aff;
             color: white;
@@ -131,61 +121,101 @@
             cursor: pointer;
             margin-left: 10px;
         }
+
+        .result-section {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        #install-banner {
+            display: none;
+            background: #007aff;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        #install-banner button {
+            height: auto;
+            min-width: unset;
+            font-size: 14px;
+            padding: 8px 16px;
+            border: 2px solid white;
+            border-radius: 6px;
+            background: white;
+            color: #007aff;
+        }
+
+        #install-banner button:hover { transform: none; }
     </style>
 </head>
 <body>
-    <h1>🧮 Calculator Plus - Web Demo</h1>
+    <div id="install-banner">
+        <span>Install Calculator Plus on your device!</span>
+        <button onclick="installApp()">Install</button>
+        <button onclick="dismissBanner()" style="background:transparent;color:white;">✕</button>
+    </div>
+
+    <h1>🧮 Calculator Plus</h1>
     <p>A powerful calculator with note-taking functionality</p>
-    
+
     <div class="calculator">
         <input type="text" class="display" id="display" placeholder="Enter expression...">
-        
-        <div class="buttons">
-            <button class="clear" onclick="clearDisplay()">C</button>
+
+        <div class="button-grid">
+            <button class="clear"    onclick="clearDisplay()">C</button>
             <button class="function" onclick="appendToDisplay('(')">(</button>
             <button class="function" onclick="appendToDisplay(')')">)</button>
             <button class="operator" onclick="appendToDisplay('/')">÷</button>
-            
+
             <button class="number" onclick="appendToDisplay('7')">7</button>
             <button class="number" onclick="appendToDisplay('8')">8</button>
             <button class="number" onclick="appendToDisplay('9')">9</button>
             <button class="operator" onclick="appendToDisplay('*')">×</button>
-            
+
             <button class="number" onclick="appendToDisplay('4')">4</button>
             <button class="number" onclick="appendToDisplay('5')">5</button>
             <button class="number" onclick="appendToDisplay('6')">6</button>
             <button class="operator" onclick="appendToDisplay('-')">−</button>
-            
+
             <button class="number" onclick="appendToDisplay('1')">1</button>
             <button class="number" onclick="appendToDisplay('2')">2</button>
             <button class="number" onclick="appendToDisplay('3')">3</button>
             <button class="operator" onclick="appendToDisplay('+')">+</button>
-            
+
             <button class="number" onclick="appendToDisplay('0')">0</button>
             <button class="number" onclick="appendToDisplay('.')">.</button>
-            <button class="equals" onclick="calculate()">=</button>
+            <button class="equals"  onclick="calculate()">=</button>
             <button class="function" onclick="appendToDisplay('Math.PI')">π</button>
         </div>
-        
-        <div class="advanced-buttons">
+
+        <h3>Advanced Functions</h3>
+        <div class="advanced-grid">
             <button class="function" onclick="appendToDisplay('Math.sin(')">sin</button>
             <button class="function" onclick="appendToDisplay('Math.cos(')">cos</button>
             <button class="function" onclick="appendToDisplay('Math.tan(')">tan</button>
             <button class="function" onclick="appendToDisplay('Math.sqrt(')">√</button>
-            
+
             <button class="function" onclick="appendToDisplay('Math.log(')">log</button>
             <button class="function" onclick="appendToDisplay('Math.exp(')">exp</button>
             <button class="function" onclick="appendToDisplay('**')">^</button>
             <button class="function" onclick="appendToDisplay('%')">%</button>
         </div>
-        
-        <div id="result-section" style="display: none;">
+
+        <div id="result-section" class="result-section">
             <h3>Result: <span id="result"></span></h3>
             <input type="text" class="note-input" id="note" placeholder="Add a note for this calculation...">
             <button class="save-btn" onclick="saveCalculation()">Save Calculation</button>
         </div>
     </div>
-    
+
     <div class="history">
         <h2>📝 Calculation History</h2>
         <div id="history-list">
@@ -198,10 +228,36 @@
         let calculationHistory = [];
         let currentExpression = '';
         let currentResult = '';
+        let deferredInstallPrompt = null;
+
+        // PWA install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredInstallPrompt = e;
+            document.getElementById('install-banner').style.display = 'flex';
+        });
+
+        window.addEventListener('appinstalled', () => {
+            document.getElementById('install-banner').style.display = 'none';
+            deferredInstallPrompt = null;
+        });
+
+        function installApp() {
+            if (deferredInstallPrompt) {
+                deferredInstallPrompt.prompt();
+                deferredInstallPrompt.userChoice.then(() => {
+                    deferredInstallPrompt = null;
+                    document.getElementById('install-banner').style.display = 'none';
+                });
+            }
+        }
+
+        function dismissBanner() {
+            document.getElementById('install-banner').style.display = 'none';
+        }
 
         function appendToDisplay(value) {
-            const display = document.getElementById('display');
-            display.value += value;
+            document.getElementById('display').value += value;
         }
 
         function clearDisplay() {
@@ -212,71 +268,63 @@
         function calculate() {
             const display = document.getElementById('display');
             const expression = display.value;
-            
+
             try {
-                // Replace common math notation
                 let processedExpression = expression
                     .replace(/×/g, '*')
                     .replace(/÷/g, '/')
+                    .replace(/−/g, '-')
                     .replace(/\^/g, '**');
-                
-                // Evaluate the expression
+
                 const result = eval(processedExpression);
-                
-                // Display result
+
                 document.getElementById('result').textContent = result;
                 document.getElementById('result-section').style.display = 'block';
-                
-                // Store for saving
+
                 currentExpression = expression;
                 currentResult = result;
-                
+
             } catch (error) {
-                alert('Error: Invalid expression');
+                alert('Error: Invalid expression - ' + error.message);
             }
         }
 
         function saveCalculation() {
             const note = document.getElementById('note').value;
             const timestamp = new Date().toLocaleString();
-            
-            const calculation = {
+
+            calculationHistory.push({
                 date: timestamp,
                 expression: currentExpression,
                 result: currentResult,
                 note: note
-            };
-            
-            calculationHistory.push(calculation);
+            });
+
             updateHistoryDisplay();
-            
-            // Clear note input
             document.getElementById('note').value = '';
             document.getElementById('result-section').style.display = 'none';
-            
             alert('Calculation saved!');
         }
 
         function updateHistoryDisplay() {
             const historyList = document.getElementById('history-list');
-            
+
             if (calculationHistory.length === 0) {
                 historyList.innerHTML = '<p>No calculations yet. Start calculating to see your history!</p>';
                 return;
             }
-            
+
             historyList.innerHTML = '';
-            
-            calculationHistory.slice().reverse().forEach((calc, index) => {
-                const historyItem = document.createElement('div');
-                historyItem.className = 'history-item';
-                historyItem.innerHTML = `
+            calculationHistory.slice().reverse().forEach((calc) => {
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.innerHTML = `
                     <strong>${calc.date}</strong><br>
                     Expression: <code>${calc.expression}</code><br>
                     Result: <code>${calc.result}</code><br>
                     ${calc.note ? `Note: ${calc.note}` : ''}
                 `;
-                historyList.appendChild(historyItem);
+                historyList.appendChild(item);
             });
         }
 
@@ -285,22 +333,25 @@
                 alert('No calculations to download!');
                 return;
             }
-            
+
             const dataStr = JSON.stringify(calculationHistory, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(dataBlob);
-            link.download = `calculator_history_${new Date().toISOString().slice(0,10)}.json`;
+            link.download = `calculator_history_${new Date().toISOString().slice(0, 10)}.json`;
             link.click();
         }
 
-        // Allow Enter key to calculate
         document.getElementById('display').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                calculate();
-            }
+            if (e.key === 'Enter') calculate();
         });
+
+        // Register service worker for offline support
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            });
+        }
     </script>
 </body>
 </html>
