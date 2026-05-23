@@ -340,11 +340,15 @@
             if (navigator.share) {
                 navigator.share({ title: 'Calculator Plus History', text });
             } else {
-                const blob = new Blob([text], { type: 'text/plain' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `calculator_history_${new Date().toISOString().slice(0, 10)}.txt`;
-                link.click();
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('History copied to clipboard!\nPaste it into Notepad, Sticky Notes, or any app.');
+                }).catch(() => {
+                    const blob = new Blob([text], { type: 'text/plain' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `calculator_history_${new Date().toISOString().slice(0, 10)}.txt`;
+                    link.click();
+                });
             }
         }
 

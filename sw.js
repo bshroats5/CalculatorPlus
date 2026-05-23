@@ -1,4 +1,4 @@
-const CACHE_NAME = 'calculator-plus-v3';
+const CACHE_NAME = 'calculator-plus-v4';
 const FILES_TO_CACHE = [
   '.',
   'index.html',
