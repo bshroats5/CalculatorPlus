@@ -210,7 +210,6 @@
         </div>
 
         <div id="result-section" class="result-section">
-            <h3>Result: <span id="result"></span></h3>
             <input type="text" class="note-input" id="note" placeholder="Add a note for this calculation...">
             <button class="save-btn" onclick="saveCalculation()">Save Calculation</button>
         </div>
@@ -278,7 +277,7 @@
 
                 const result = eval(processedExpression);
 
-                document.getElementById('result').textContent = result;
+                display.value = result;
                 document.getElementById('result-section').style.display = 'block';
 
                 currentExpression = expression;
