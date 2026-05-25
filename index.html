@@ -12,6 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Calc+">
     <link rel="apple-touch-icon" href="icon.svg">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
 
     <style>
         body {
@@ -80,6 +81,8 @@
         .function { background-color: #007aff; color: white; border-color: #0056cc; }
         .equals   { background-color: #ff9500; color: white; border-color: #e8890b; }
         .clear    { background-color: #ff3b30; color: white; border-color: #e02d1c; }
+        .currency { background-color: #34c759; color: white; border-color: #28a745; grid-column: span 4; }
+        .header-icon { height: 1em; vertical-align: middle; margin-right: 8px; }
 
         .history {
             background: white;
@@ -163,7 +166,7 @@
         <button onclick="dismissBanner()" style="background:transparent;color:white;">✕</button>
     </div>
 
-    <h1>🧮 Calculator Plus</h1>
+    <h1><img src="icon.svg" alt="Calculator Plus" class="header-icon"> Calculator Plus</h1>
     <p>A powerful calculator with note-taking functionality</p>
 
     <div class="calculator">
@@ -207,6 +210,8 @@
             <button class="function" onclick="appendToDisplay('Math.exp(')">exp</button>
             <button class="function" onclick="appendToDisplay('**')">^</button>
             <button class="function" onclick="appendToDisplay('%')">%</button>
+
+            <button class="currency" onclick="formatCurrency()">$ Convert to Currency</button>
         </div>
 
         <div id="result-section" class="result-section">
@@ -325,6 +330,16 @@
                 `;
                 historyList.appendChild(item);
             });
+        }
+
+        function formatCurrency() {
+            const display = document.getElementById('display');
+            const value = parseFloat(display.value);
+            if (isNaN(value)) {
+                alert('Enter or calculate a number first.');
+                return;
+            }
+            display.value = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
         }
 
         function shareHistory() {

@@ -95,7 +95,20 @@
             color: white;
             border-color: #e02d1c;
         }
-        
+
+        .currency {
+            background-color: #34c759;
+            color: white;
+            border-color: #28a745;
+            grid-column: span 4;
+        }
+
+        .header-icon {
+            height: 1em;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
         .history {
             background: white;
             border-radius: 10px;
@@ -147,7 +160,7 @@
     </style>
 </head>
 <body>
-    <h1>🧮 Calculator Plus - Web Demo</h1>
+    <h1><img src="icon.svg" alt="Calculator Plus" class="header-icon"> Calculator Plus</h1>
     <p>A powerful calculator with note-taking functionality</p>
     
     <div class="calculator">
@@ -200,6 +213,8 @@
             <button class="function" onclick="appendToDisplay('Math.exp(')">exp</button>
             <button class="function" onclick="appendToDisplay('**')">^</button>
             <button class="function" onclick="appendToDisplay('%')">%</button>
+
+            <button class="currency" onclick="formatCurrency()">$ Convert to Currency</button>
         </div>
         
         <div id="result-section" class="result-section">
@@ -300,6 +315,16 @@
                 `;
                 historyList.appendChild(historyItem);
             });
+        }
+
+        function formatCurrency() {
+            const display = document.getElementById('display');
+            const value = parseFloat(display.value);
+            if (isNaN(value)) {
+                alert('Enter or calculate a number first.');
+                return;
+            }
+            display.value = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
         }
 
         function shareHistory() {
